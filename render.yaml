@@ -1,10 +1,9 @@
 services:
   - type: web
-    name: puppeteer-cleaner
+    name: repost-cleaner
     env: node
     buildCommand: npm install
-    startCommand: node index.js
-    plan: free
+    startCommand: npm start
     envVars:
-      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+      - key: PUPPETEER_SKIP_DOWNLOAD
         value: true

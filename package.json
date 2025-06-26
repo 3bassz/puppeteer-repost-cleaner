@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "postinstall": "echo 'Skipping Chromium download'"
+    "postinstall": "PUPPETEER_SKIP_DOWNLOAD=true echo 'Skipping Chromium download'"
   },
   "dependencies": {
     "express": "^4.21.2",
