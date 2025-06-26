@@ -1,0 +1,9 @@
+# تجاهل مجلد node_modules
+node_modules/
+
+# تجاهل ملفات اللوج أو المؤقتة
+npm-debug.log
+.DS_Store
+
+# تجاهل بيئة التطوير المحلية
+.env
