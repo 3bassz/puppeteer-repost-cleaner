@@ -1,16 +1,22 @@
 {
-  "name": "repost-cleaner",
+  "name": "puppeteer-repost-cleaner",
   "version": "1.0.0",
+  "description": "TikTok Repost Cleaner using Puppeteer",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
+  "keywords": [
+    "tiktok",
+    "puppeteer",
+    "repost",
+    "cleaner",
+    "automation"
+  ],
+  "author": "YourName",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.21.2",
     "puppeteer": "^24.10.2"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  }
 }
