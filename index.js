@@ -6,6 +6,7 @@ app.use(express.json());
 
 // 🧠 تشغيل المتصفح
 const launchBrowser = async () => {
+  console.log("🔁 جاري تشغيل المتصفح...");
   return await puppeteer.launch({
     headless: true,
     executablePath: '/opt/render/.cache/puppeteer/chrome/linux-137.0.7151.119/chrome-linux64/chrome',
@@ -15,6 +16,7 @@ const launchBrowser = async () => {
 
 // 🔐 تسجيل الدخول بالـ sessionid
 const loginWithSession = async (page, sessionid) => {
+  console.log("🔐 تسجيل الدخول بـ sessionid...");
   await page.setCookie({
     name: "sessionid",
     value: sessionid,
@@ -28,14 +30,17 @@ const loginWithSession = async (page, sessionid) => {
 
 // 🔢 حساب عدد الريبوستات
 const getRepostsCount = async (page) => {
+  console.log("📥 فتح صفحة الريبوستات لحساب العدد...");
   await page.goto("https://www.tiktok.com/favorites/reposts", { waitUntil: "networkidle2" });
   await page.waitForSelector("div[data-e2e='user-post-item-list']", { timeout: 10000 });
   const count = await page.$$eval("div[data-e2e='user-post-item-list'] > div", divs => divs.length);
+  console.log("✅ عدد الريبوستات:", count);
   return count;
 };
 
 // 🗑️ حذف الريبوستات
 const deleteReposts = async (page) => {
+  console.log("🗑️ جاري حذف الريبوستات...");
   await page.goto("https://www.tiktok.com/favorites/reposts", { waitUntil: "networkidle2" });
   await page.waitForSelector("div[data-e2e='user-post-item-list']", { timeout: 10000 });
 
@@ -57,18 +62,23 @@ const deleteReposts = async (page) => {
         }
       }
     } catch (err) {
-      console.warn("خطأ أثناء حذف ريبوست:", err.message);
+      console.warn("⚠️ خطأ أثناء حذف ريبوست:", err.message);
       continue;
     }
   }
 
+  console.log("✅ تم حذف", deleted, "ريبوست");
   return deleted;
 };
 
 // ✅ عداد الريبوستات
 app.post("/count", async (req, res) => {
+  console.log("📩 /count endpoint hit");
   const { sessionid } = req.body;
-  if (!sessionid) return res.status(400).send({ error: "Missing sessionid" });
+  if (!sessionid) {
+    console.warn("🚫 لا يوجد sessionid في الطلب");
+    return res.status(400).send({ error: "Missing sessionid" });
+  }
 
   const browser = await launchBrowser();
   try {
@@ -78,6 +88,7 @@ app.post("/count", async (req, res) => {
     await browser.close();
     res.send({ count });
   } catch (err) {
+    console.error("❌ خطأ في /count:", err.message);
     await browser.close();
     res.status(500).send({ error: err.message || "Unknown error while counting." });
   }
@@ -85,8 +96,12 @@ app.post("/count", async (req, res) => {
 
 // ✅ حذف الريبوستات
 app.post("/clean", async (req, res) => {
+  console.log("📩 /clean endpoint hit");
   const { sessionid } = req.body;
-  if (!sessionid) return res.status(400).send({ error: "Missing sessionid" });
+  if (!sessionid) {
+    console.warn("🚫 لا يوجد sessionid في الطلب");
+    return res.status(400).send({ error: "Missing sessionid" });
+  }
 
   const browser = await launchBrowser();
   try {
@@ -96,6 +111,7 @@ app.post("/clean", async (req, res) => {
     await browser.close();
     res.send({ success: true, deleted });
   } catch (err) {
+    console.error("❌ خطأ في /clean:", err.message);
     await browser.close();
     res.status(500).send({ error: err.message || "Unknown error while cleaning." });
   }
