@@ -1,39 +1,38 @@
 const express = require("express");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
+const path = require("path");
 
 const app = express();
 app.use(express.json());
 
 app.post("/clean", async (req, res) => {
   const { sessionid } = req.body;
-
   if (!sessionid) return res.status(400).send({ error: "Missing sessionid" });
 
   const browser = await puppeteer.launch({
     headless: "new",
-    args: ['--no-sandbox']
+    executablePath: "/usr/bin/google-chrome", // المسار الشائع في Render
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 
   try {
     const page = await browser.newPage();
+
     await page.setCookie({
       name: "sessionid",
       value: sessionid,
       domain: ".tiktok.com",
       path: "/",
       httpOnly: true,
-      secure: true
+      secure: true,
     });
 
-    await page.goto("https://www.tiktok.com/foryou", { waitUntil: "networkidle2" });
+    await page.goto("https://www.tiktok.com/foryou", {
+      waitUntil: "networkidle2",
+    });
 
-    // مثال لحذف أول 5 ريبوستات (يحتاج تخصيص حسب التصميم)
     let deleted = 0;
-    for (let i = 0; i < 5; i++) {
-      // الكود هنا يفترض إن الريبوستات ليها زر معين
-      // محتاج تعديلات حسب الـ UI الحقيقي
-    }
-
+    // TODO: تعديل كود الحذف حسب التصميم
     await browser.close();
     res.send({ success: true, deleted });
   } catch (err) {
