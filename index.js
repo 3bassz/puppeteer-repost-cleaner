@@ -7,7 +7,8 @@ app.use(express.json());
 // 🧠 تشغيل المتصفح
 const launchBrowser = async () => {
   return await puppeteer.launch({
-    headless: "new",
+    headless: true,
+    executablePath: '/opt/render/.cache/puppeteer/chrome/linux-137.0.7151.119/chrome-linux64/chrome',
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 };
@@ -51,7 +52,7 @@ const deleteReposts = async (page) => {
         const [unfavBtn] = await page.$x("//div[contains(text(), 'Remove from reposts') or contains(text(), 'إزالة من المشاركات')]");
         if (unfavBtn) {
           await unfavBtn.click();
-          await page.waitForTimeout(1000); // تأخير بسيط بين كل حذف
+          await page.waitForTimeout(1000);
           deleted++;
         }
       }
